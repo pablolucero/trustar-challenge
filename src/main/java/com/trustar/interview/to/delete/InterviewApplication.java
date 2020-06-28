@@ -1,4 +1,4 @@
-package com.trustar.interview;
+package com.trustar.interview.to.delete;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
