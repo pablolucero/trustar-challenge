@@ -22,7 +22,7 @@ public class Question3 {
             throw new QuestionException("Patterns is null or empty");
         }
 
-        textInput = removeMatches(textInput, patternToIgnore);
+        textInput = removeAllMatches(textInput, patternToIgnore);
 
         List<String> result = new ArrayList<>();
 
@@ -39,13 +39,17 @@ public class Question3 {
         while (regexMatcher.find()) {
             if (regexMatcher.group().length() > 0) {
                 result.add(regexMatcher.group());
-                textInput = textInput.replaceFirst(pattern.pattern(), "");
+                textInput = removeFirstMatch(textInput, pattern);
             }
         }
         return textInput;
     }
 
-    private static String removeMatches(String textInput, Pattern patternToIgnore) {
+    private static String removeFirstMatch(String textInput, Pattern pattern) {
+        return textInput.replaceFirst(pattern.pattern(), "");
+    }
+
+    private static String removeAllMatches(String textInput, Pattern patternToIgnore) {
         if (patternToIgnore != null) {
             return textInput.replaceAll(patternToIgnore.pattern(), "");
         }

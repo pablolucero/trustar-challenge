@@ -4,11 +4,11 @@ import com.google.common.collect.ImmutableList;
 import com.trustar.interview.exception.QuestionException;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-
 import java.util.List;
 import java.util.regex.Pattern;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class Question1Test {
 
@@ -20,6 +20,11 @@ class Question1Test {
     @Test
     public void exceptionIsThrownIfThePattersListIsEmpty() {
         assertThrows(QuestionException.class, () -> Question1.findPatterns(ImmutableList.of(), "abc"));
+    }
+
+    @Test
+    public void exceptionIsThrownIfTheTextInputIsNull() {
+        assertThrows(QuestionException.class, () -> Question1.findPatterns(ImmutableList.of(Pattern.compile(".")), null));
     }
 
     @Test

@@ -20,6 +20,10 @@ public class Question1 {
             throw new QuestionException("Patterns is null or empty");
         }
 
+        if (textInput == null) {
+            throw new QuestionException("Text input is null");
+        }
+
         return patterns.stream()
                 .map(pattern -> selectMatches(textInput, pattern))
                 .flatMap(Collection::stream)

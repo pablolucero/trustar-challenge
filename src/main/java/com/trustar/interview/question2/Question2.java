@@ -21,17 +21,26 @@ public class Question2 {
         List<String> result = new ArrayList<>();
 
         for (Pattern pattern : patterns) {
-
-            final Matcher regexMatcher = pattern.matcher(textInput);
-
-            while (regexMatcher.find()) {
-                if (regexMatcher.group().length() > 0) {
-                    result.add(regexMatcher.group());
-                    textInput = textInput.replaceFirst(pattern.pattern(), "");
-                }
-            }
+            textInput = selectMatchesAddThemToResultAndReturnTextInputWithoutThoseMatches(pattern, textInput, result);
         }
         return result;
+    }
+
+    private static String selectMatchesAddThemToResultAndReturnTextInputWithoutThoseMatches(Pattern pattern,
+                                                                                            String textInput,
+                                                                                            List<String> result) {
+        final Matcher regexMatcher = pattern.matcher(textInput);
+        while (regexMatcher.find()) {
+            if (regexMatcher.group().length() > 0) {
+                result.add(regexMatcher.group());
+                textInput = removeFirstMatch(textInput, pattern);
+            }
+        }
+        return textInput;
+    }
+
+    private static String removeFirstMatch(String textInput, Pattern pattern) {
+        return textInput.replaceFirst(pattern.pattern(), "");
     }
 
 }
