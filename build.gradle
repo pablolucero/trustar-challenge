@@ -15,7 +15,6 @@ repositories {
 dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation "com.google.guava:guava:29.0-jre"
-    compile group: 'org.jetbrains', name: 'annotations', version: '19.0.0'
     compile group: 'org.jsoup', name: 'jsoup', version: '1.13.1'
     compile group: 'com.fasterxml.jackson.core', name: 'jackson-databind', version: '2.11.1'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
