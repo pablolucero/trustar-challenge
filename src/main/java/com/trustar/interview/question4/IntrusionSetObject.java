@@ -1,20 +1,13 @@
-package com.trustar.interview.question4.model;
-
-import com.trustar.interview.exception.APTExtractorException;
+package com.trustar.interview.question4;
 
 import java.util.Collection;
 
-public class APTInfo {
+public class IntrusionSetObject {
     private final String name;
     private final Collection<String> aliases;
     private final Collection<String> urls;
 
-    public APTInfo(String name, Collection<String> aliases, Collection<String> urls) {
-        if (!name.matches("APT\\d{2}")) {
-            throw new APTExtractorException("APT name must use the format APNnn, where nn is a number. "
-                    + name + " is not valid");
-        }
-
+    public IntrusionSetObject(String name, Collection<String> aliases, Collection<String> urls) {
         this.name = name;
         this.aliases = aliases;
         this.urls = urls;
@@ -32,9 +25,8 @@ public class APTInfo {
         return urls;
     }
 
-    @Override
     public String toString() {
-        return "APTInfo{" +
+        return "IntrusionSetInfo{" +
                 "name='" + name + '\'' +
                 ", aliases=" + aliases +
                 ", urls=" + urls +
