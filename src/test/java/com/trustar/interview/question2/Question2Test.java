@@ -2,7 +2,6 @@ package com.trustar.interview.question2;
 
 import com.google.common.collect.ImmutableList;
 import com.trustar.interview.exception.QuestionException;
-import com.trustar.interview.question1.Question1;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -25,7 +24,7 @@ class Question2Test {
 
     @Test
     public void exceptionIsThrownIfTheTextInputIsNull() {
-        assertThrows(QuestionException.class, () -> Question1.findPatterns(ImmutableList.of(Pattern.compile(".")), null));
+        assertThrows(QuestionException.class, () -> Question2.findPatterns(ImmutableList.of(Pattern.compile(".")), null));
     }
 
     @Test

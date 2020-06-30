@@ -18,6 +18,10 @@ public class Question2 {
             throw new QuestionException("Patterns is null or empty");
         }
 
+        if (textInput == null) {
+            throw new QuestionException("Text input is null");
+        }
+
         List<String> result = new ArrayList<>();
 
         for (Pattern pattern : patterns) {

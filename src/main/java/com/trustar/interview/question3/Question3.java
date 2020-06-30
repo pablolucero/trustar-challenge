@@ -22,6 +22,10 @@ public class Question3 {
             throw new QuestionException("Patterns is null or empty");
         }
 
+        if (textInput == null) {
+            throw new QuestionException("Text input is null");
+        }
+
         textInput = removeAllMatches(textInput, patternToIgnore);
 
         List<String> result = new ArrayList<>();
