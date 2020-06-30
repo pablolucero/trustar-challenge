@@ -5,27 +5,33 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.matchesPattern;
+import static org.hamcrest.Matchers.not;
 
 public class Question4Test {
 
     @Test
-    public void triggerAPTExtractorTest() throws IOException {
+    public void end2endAPTExtractorTest() throws IOException {
         APTExtractor extractor = new APTExtractor();
-        List<IntrusionSetObject> list = extractor.extract();
-        for (IntrusionSetObject aptInfo : list) {
-            final String name = aptInfo.getName();
-            if (!name.matches("APT\\d{2}")) {
-                System.out.println(name);
-            }
-            assertTrue(name.matches("APT\\d{2}"));
-            aptInfo.getUrls()
-                    .forEach(url -> {
-                        System.out.println(url);
-                        assertFalse(url.contains("symantec.com"));
-                        assertFalse(url.contains("cybereason.com"));
-                    });
+        List<IntrusionSetObject> apts = extractor.extract();
+        for (IntrusionSetObject apt : apts) {
+            assertNameMatchAPTFormat(apt);
+            assertUrlsDoNotHaveIgnoredDomains(apt);
         }
+    }
+
+    private void assertNameMatchAPTFormat(IntrusionSetObject aptInfo) {
+        final String name = aptInfo.getName();
+        assertThat(name, matchesPattern("APT\\d{2}"));
+    }
+
+    private void assertUrlsDoNotHaveIgnoredDomains(IntrusionSetObject aptInfo) {
+        aptInfo.getUrls()
+                .forEach(url -> {
+                    assertThat(url, not(containsString("symantec.com")));
+                    assertThat(url, not(containsString("cybereason.com")));
+                });
     }
 }

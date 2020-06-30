@@ -25,8 +25,9 @@ public class IntrusionSetObject {
         return urls;
     }
 
+    @Override
     public String toString() {
-        return "IntrusionSetInfo{" +
+        return "IntrusionSetObject{" +
                 "name='" + name + '\'' +
                 ", aliases=" + aliases +
                 ", urls=" + urls +

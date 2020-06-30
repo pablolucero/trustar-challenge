@@ -12,34 +12,68 @@ import java.net.URL;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.Function;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
 public class APTExtractor {
+
     public List<IntrusionSetObject> extract() throws IOException {
 
-        Document doc = Jsoup.connect("https://github.com/mitre/cti/tree/master/enterprise-attack/intrusion-set").get();
+        final Document anHtmlDocument = fetchHtmlFromUrl();
 
-        final List<String> urlsOfJsonsIntrusionSets = doc.select("a").stream()
+        final List<String> urlsOfJsonsIntrusionSets = extractUrlsOfJsonsIntrusionSets(anHtmlDocument);
+
+        return extractAPTs(urlsOfJsonsIntrusionSets);
+    }
+
+    private Document fetchHtmlFromUrl() throws IOException {
+        return Jsoup.connect("https://github.com/mitre/cti/tree/master/enterprise-attack/intrusion-set").get();
+    }
+
+    private List<String> extractUrlsOfJsonsIntrusionSets(Document anHtmlDocument) {
+        return anHtmlDocument.select("a").stream()
                 .map(anchor -> anchor.attr("href"))
-                .filter(href -> href.startsWith("/mitre/cti/blob/master/enterprise-attack/intrusion-set/intrusion-set--")
-                        && href.endsWith(".json"))
-                .map(href -> href.replaceFirst("/mitre/cti/blob", "https://raw.githubusercontent.com/mitre/cti"))
-                .collect(Collectors.toList());
-
-        return urlsOfJsonsIntrusionSets.parallelStream()
-                .map(aUrl -> {
-                    try {
-                        return mapUrlToIntrusionSetObject(aUrl);
-                    } catch (IOException error) {
-                        throw new APTExtractorException("Problems retrieving the urls", error);
-                    }
-                })
-                .filter(intrusionSetObject -> intrusionSetObject.getName().matches("APT\\d{2}"))
-                .filter(intrusionSetObject -> intrusionSetObject.getUrls().stream()
-                        .noneMatch(url -> url.contains("symantec.com") || url.contains("cybereason.com")))
+                .filter(this::hrefCorrespondToAnIntrusionSet)
+                .map(this::mapHTMLBlobHrefToARawFileUrl)
                 .collect(Collectors.toList());
     }
 
+    private boolean hrefCorrespondToAnIntrusionSet(String href) {
+        return href.startsWith("/mitre/cti/blob/master/enterprise-attack/intrusion-set/intrusion-set--")
+                && href.endsWith(".json");
+    }
+
+    private String mapHTMLBlobHrefToARawFileUrl(String href) {
+        return href.replaceFirst("/mitre/cti/blob", "https://raw.githubusercontent.com/mitre/cti");
+    }
+
+    private List<IntrusionSetObject> extractAPTs(List<String> urlsOfJsonsIntrusionSets) {
+        return urlsOfJsonsIntrusionSets.parallelStream()
+                .map(mapUrlToIntrusionSetObjectOrThrowException())
+                .filter(intrusionSetsWithNamesThatMatchTheAPTFormat())
+                .filter(intrusionSetsWithRelatedUrlsThatCorrespondsToNotIgnoredDomains())
+                .collect(Collectors.toList());
+    }
+
+    private Predicate<IntrusionSetObject> intrusionSetsWithNamesThatMatchTheAPTFormat() {
+        return intrusionSetObject -> intrusionSetObject.getName().matches("APT\\d{2}");
+    }
+
+    private Predicate<IntrusionSetObject> intrusionSetsWithRelatedUrlsThatCorrespondsToNotIgnoredDomains() {
+        return intrusionSetObject -> intrusionSetObject.getUrls().stream()
+                .noneMatch(url -> url.contains("symantec.com") || url.contains("cybereason.com"));
+    }
+
+    private Function<String, IntrusionSetObject> mapUrlToIntrusionSetObjectOrThrowException() {
+        return aUrl -> {
+            try {
+                return mapUrlToIntrusionSetObject(aUrl);
+            } catch (IOException error) {
+                throw new APTExtractorException("Problems retrieving the urls", error);
+            }
+        };
+    }
 
     private IntrusionSetObject mapUrlToIntrusionSetObject(String aUrl) throws IOException {
 
