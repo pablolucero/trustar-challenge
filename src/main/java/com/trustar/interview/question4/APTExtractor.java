@@ -32,7 +32,7 @@ public class APTExtractor {
     }
 
     private List<String> extractUrlsOfJsonsIntrusionSets(Document anHtmlDocument) {
-        return anHtmlDocument.select("a").stream()
+        return anHtmlDocument.select("a[href]").stream()
                 .map(anchor -> anchor.attr("href"))
                 .filter(this::hrefCorrespondToAnIntrusionSet)
                 .map(this::mapHTMLBlobHrefToARawFileUrl)
