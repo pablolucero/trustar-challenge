@@ -24,7 +24,7 @@ public class Question1 {
             throw new QuestionException("Text input is null");
         }
 
-        return patterns.stream()
+        return patterns.parallelStream()
                 .map(pattern -> selectMatches(textInput, pattern))
                 .flatMap(Collection::stream)
                 .collect(Collectors.toList());
