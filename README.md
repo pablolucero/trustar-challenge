@@ -1,15 +1,17 @@
 ## TruSTAR Questionnaire
 
 ### How to build
-`$ ./gradlew clean build`
-
-`$ java -jar build/libs/plucero-interview-1.0.0.jar`
-
+```
+$ ./gradlew clean build
+$ java -jar build/libs/plucero-interview-1.0.0.jar
+```
 This will print the result output of the Question 4.
 
 Also, you can run the tests with
 
-`$ ./gradlew clean test`
+```
+$ ./gradlew clean test
+```
 
 
 ### Question 5
